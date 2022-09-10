@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">fightingAPP</string>
+    <string name="city_name">St. Paul, Mn</string>
+    <string name="current_temp">72</string>
 </resources>
