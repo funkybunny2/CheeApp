@@ -1,0 +1,5 @@
+package com.example.fightingapp
+
+data class DayForecast(val Date: Long, val sunrise: Long,
+                       val sunset: Long, val temp: ForecastTemp,
+                       val pressure: Float, val humidity: Int)

@@ -4,6 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/vangn/AndroidStudioProjects/fightingAPP/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/vangn/AndroidStudioProjects/fightingAPP/app/src/main/res/layout/fragment_current_conditions.xml" value="0.2791666666666667" />
+        <entry key="..\:/Users/vangn/AndroidStudioProjects/fightingAPP/app/src/main/res/layout/fragment_forecast.xml" value="0.1" />
+        <entry key="..\:/Users/vangn/AndroidStudioProjects/fightingAPP/app/src/main/res/layout/view_forecast_item.xml" value="0.25842696629213485" />
       </map>
     </option>
   </component>
