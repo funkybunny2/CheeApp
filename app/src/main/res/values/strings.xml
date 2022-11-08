@@ -3,4 +3,11 @@
     <string name="city_name">St. Paul, Mn</string>
     <string name="current_temp">72</string>
     <string name="forecast">forecast</string>
+    <string name="feels_like">Feels Like %d</string>
+    <string name="high">Hight: %d</string>
+    <string name="low">Low: %d</string>
+    <string name="humidity">Humidity: %d%%</string>
+    <string name="pressure">Pressure: %dhPa</string>
+    <string name="sunrise">Sunrise: %s</string>
+    <string name="sunset">Sunset: %s</string>
 </resources>
