@@ -15,7 +15,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.fightingapp.ui.CurrentConditionsScreen
 import com.example.fightingapp.ui.ForecastScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,10 +28,7 @@ class MainActivity : ComponentActivity() {
 
             NavHost(navController = navController, startDestination = "CurrentConditions" ){
                 composable("CurrentConditions") {
-                    CurrentConditionsScreen(
-                        stringResource(id = R.string.city_name),
-                        stringResource(id = R.string.current_temp, 56)
-                    ){
+                    CurrentConditionsScreen {
                         navController.navigate("Forecast")
                     }
                 }

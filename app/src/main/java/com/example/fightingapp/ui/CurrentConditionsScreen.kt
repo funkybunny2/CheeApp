@@ -10,8 +10,12 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -20,31 +24,47 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LifecycleOwner
 import com.example.fightingapp.R
+import com.example.fightingapp.models.CurrentConditions
 import java.time.format.TextStyle
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun CurrentConditionsScreen(cityName: String, temperature: String,onForecastButtonClick: () -> Unit){
+fun CurrentConditionsScreen(viewModel: CurrentConditionsViewModel = hiltViewModel(),
+                            onForecastButtonClick: () -> Unit,
+)
+{
+    val state by viewModel.currentConditions.collectAsState(null )
+    LaunchedEffect(Unit){
+        viewModel.fetchData()
+    }
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = stringResource(id = R.string.app_name)) }
         )
     }
     ){
-        CurrentConditionsContent(cityName, temperature,onForecastButtonClick)
+        state?.let {
+            CurrentConditionsContent(it){
+                onForecastButtonClick()
+            }
+        }
     }
 }
 
 @Composable
-private fun CurrentConditionsContent(cityName: String, temperature: String, onForecastButtonClick: () -> Unit,){
+private fun CurrentConditionsContent(
+                                     currentConditions: CurrentConditions,
+                                     onForecastButtonClick: () -> Unit,){
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             modifier = Modifier.padding(16.dp),
-            text = cityName,
+            text = stringResource(id = R.string.city_name, R.string.city_name),
             style = androidx.compose.ui.text.TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight(400)
@@ -54,12 +74,12 @@ private fun CurrentConditionsContent(cityName: String, temperature: String, onFo
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Column() {
-                Text(text=temperature,
+            Column {
+                Text(text = stringResource(id = R.string.current_temp, R.string.current_temp),
                     fontSize = 72.sp, fontWeight = FontWeight(600),
                     textAlign = TextAlign.Start
                 )
-                Text(text = stringResource(id = R.string.feels_like, 82),fontSize = 18.sp)
+                Text(text = stringResource(id = R.string.feels_like, currentConditions.conditions.feelslike.toInt()),fontSize = 18.sp)
             }
 
             Spacer(modifier = Modifier.weight(1f, fill = true))
@@ -75,15 +95,15 @@ private fun CurrentConditionsContent(cityName: String, temperature: String, onFo
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.Start) {
             Text(
-                text = stringResource(id = R.string.low, 65),fontSize = 18.sp
+                text = stringResource(id = R.string.low, currentConditions.conditions.minTemperature.toInt()),fontSize = 18.sp
             )
             Text(
-                text = stringResource(id = R.string.high, 80),fontSize = 18.sp
+                text = stringResource(id = R.string.high, currentConditions.conditions.maxTemperature.toInt()),fontSize = 18.sp
             )
             Text(
-                text = stringResource(id = R.string.humidity, 100),fontSize = 18.sp
+                text = stringResource(id = R.string.humidity, currentConditions.conditions.humidity.toInt()),fontSize = 18.sp
             )
-            Text(text = stringResource(id = R.string.pressure, 1013),fontSize = 18.sp)
+            Text(text = stringResource(id = R.string.pressure, currentConditions.conditions.pressure.toInt()),fontSize = 18.sp)
         }
         Spacer(modifier = Modifier.height(72.dp))
         Button(onClick = onForecastButtonClick) {
@@ -93,10 +113,3 @@ private fun CurrentConditionsContent(cityName: String, temperature: String, onFo
 
 }
 
-@Preview(
-    "CurrentConditions",device = Devices.PIXEL_4,showBackground = true,showSystemUi = true,
-)
-@Composable
-fun CurrentConditionsScreenPreview(){
-        CurrentConditionsScreen("St, Paul, MN", "52"){}
-}
