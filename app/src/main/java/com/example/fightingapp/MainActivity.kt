@@ -10,11 +10,13 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.fightingapp.ui.CurrentConditionsScreen
 import com.example.fightingapp.ui.ForecastScreen
+import com.example.fightingapp.ui.ForecastViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -14,10 +14,11 @@ interface OpenWeatherApi {
         @Query("units") units: String = "imperial"
     ): CurrentConditions
 
-    @GET("data/2.5/forecast")
+    @GET("data/2.5/forecast/daily")
     suspend fun getForecastConditions(
         @Query("zip") zip: String,
         @Query("appid") appid: String = "e22b4a86b5fad1d599b91bc54a3576ee",
         @Query("units") units: String = "imperial",
+        @Query("cnt") cnt: String = "16"
     ): ForecastConditions
 }

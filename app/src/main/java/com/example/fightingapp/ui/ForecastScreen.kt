@@ -34,10 +34,6 @@ import com.example.fightingapp.models.ForecastData
 import com.example.fightingapp.toHourMinute
 import com.example.fightingapp.toMonthDay
 
-var forecastItem: List<DayForecast> = listOf()
-
-
-
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ForecastScreen(viewModel: ForecastViewModel = hiltViewModel()){
@@ -45,43 +41,24 @@ fun ForecastScreen(viewModel: ForecastViewModel = hiltViewModel()){
     LaunchedEffect(Unit){
         viewModel.fetchData()
     }
-
-
-    state?.let { forecastItem = forecastData(it) }
-
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = "Forecast") }
         )
     }
     ){
         LazyColumn{
-            items(items = forecastItem){ item: DayForecast ->
-                ForecastRow(item = item)
+            state?.let { it1 ->
+                items(items = it1.forecastData){ item: ForecastData ->
+                    ForecastRow(item = item)
+                }
             }
         }
     }
 }
-wq:wq
-
-private fun forecastData(forecastConditions : ForecastConditions): List<DayForecast> {
-    val forecastData = (0 until 16).map {
-        DayForecast(
-            date = forecastConditions.forecastData[0].date + (it * (24*60*60)),
-            sunrise = forecastConditions.forecastData[0].sunrise + (it * (24*60*60)),
-            sunset = forecastConditions.forecastData[0].sunset + (it * (24*60*60)),
-            temp = ForecastTemp(day = 80f,min = forecastConditions.forecastData[0].temp.min+ it, max = forecastConditions.forecastData[0].temp.max+it),
-            pressure = 1024f,
-            humidity = 76,
-        )
-    }
-    return forecastData
-}
-
 
 @Composable
-private fun ForecastRow(item: DayForecast){
+private fun ForecastRow(item: ForecastData){
 Row(
-
     modifier = Modifier.background(Color.White),
     verticalAlignment = Alignment.CenterVertically,
 ) {
