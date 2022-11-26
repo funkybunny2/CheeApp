@@ -10,4 +10,5 @@
     <string name="pressure">Pressure: %dhPa</string>
     <string name="sunrise">Sunrise: %s</string>
     <string name="sunset">Sunset: %s</string>
+    <string name="temperature">%s</string>
 </resources>

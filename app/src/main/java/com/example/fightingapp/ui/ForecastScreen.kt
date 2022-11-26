@@ -13,6 +13,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,48 +25,40 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.fightingapp.ForecastTemp
 import com.example.fightingapp.R
 import com.example.fightingapp.models.DayForecast
+import com.example.fightingapp.models.ForecastConditions
+import com.example.fightingapp.models.ForecastData
 import com.example.fightingapp.toHourMinute
 import com.example.fightingapp.toMonthDay
 
-val startDay = 1665014340L
-val sunrise = 1664953200L
-val sunset = 1664996400L
-
-val forecastData = (0 until 16).map {
-    DayForecast(
-        date = startDay + (it * (24*60*60)),
-        sunrise = sunrise + (it * (24*60*60)),
-        sunset = sunset + (it * (24*60*60)),
-        temp = ForecastTemp(day = 80f,min = 70f+ it, max = 80f+it),
-        pressure = 1024f,
-        humidity = 76,
-    )
-}
-
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ForecastScreen(){
+fun ForecastScreen(viewModel: ForecastViewModel = hiltViewModel()){
+    val state by viewModel.forecastConditions.collectAsState(null )
+    LaunchedEffect(Unit){
+        viewModel.fetchData()
+    }
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = "Forecast") }
         )
     }
     ){
         LazyColumn{
-            items(items = forecastData){ item: DayForecast ->
-                ForecastRow(item = item)
+            state?.let { it1 ->
+                items(items = it1.forecastData){ item: ForecastData ->
+                    ForecastRow(item = item)
+                }
             }
         }
     }
-
 }
 
 @Composable
-private fun ForecastRow(item: DayForecast){
+private fun ForecastRow(item: ForecastData){
 Row(
-
     modifier = Modifier.background(Color.White),
     verticalAlignment = Alignment.CenterVertically,
 ) {
@@ -75,14 +70,14 @@ Row(
     Text(text = item.date.toMonthDay(),
         fontSize = 16.sp)
     Spacer(modifier = Modifier.weight(1f,fill=true))
-    Column() {
+    Column {
         Text(text = stringResource(id = R.string.high, item.temp.max.toInt()),
         style= textStyle)
         Text(text = stringResource(id = R.string.low, item.temp.min.toInt()),
             style= textStyle)
     }
     Spacer(modifier = Modifier.weight(1f,fill=true))
-    Column() {
+    Column {
         Text(text = stringResource(id = R.string.sunrise, item.sunrise.toHourMinute()),
             style= textStyle)
         Text(text = stringResource(id = R.string.sunset, item.sunset.toHourMinute()),
@@ -91,13 +86,7 @@ Row(
     }
 }
 
-@Preview(
-    showSystemUi = true,
-)
-@Composable
-private fun ForecastRowPreview(){
-    ForecastRow(item = forecastData[0])
-}
+
 
 
 
