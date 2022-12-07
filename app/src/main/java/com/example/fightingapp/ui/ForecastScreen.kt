@@ -22,25 +22,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.fightingapp.ForecastTemp
 import com.example.fightingapp.R
-import com.example.fightingapp.models.DayForecast
-import com.example.fightingapp.models.ForecastConditions
 import com.example.fightingapp.models.ForecastData
+import com.example.fightingapp.models.LatitudeLongitude
 import com.example.fightingapp.toHourMinute
 import com.example.fightingapp.toMonthDay
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ForecastScreen(viewModel: ForecastViewModel = hiltViewModel()){
+fun ForecastScreen(latitudeLongitude: LatitudeLongitude?,viewModel: ForecastViewModel = hiltViewModel()){
     val state by viewModel.forecastConditions.collectAsState(null )
-    LaunchedEffect(Unit){
-        viewModel.fetchData()
-    }
+        if(latitudeLongitude != null){
+             LaunchedEffect(Unit){
+            viewModel.fetchCurrentLocationData(latitudeLongitude) }
+        }else{
+            LaunchedEffect(Unit){
+            viewModel.fetchData()}
+        }
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = "Forecast") }
         )
