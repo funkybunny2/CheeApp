@@ -28,18 +28,28 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleOwner
 import com.example.fightingapp.R
 import com.example.fightingapp.models.CurrentConditions
+import com.example.fightingapp.models.LatitudeLongitude
 import java.time.format.TextStyle
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun CurrentConditionsScreen(viewModel: CurrentConditionsViewModel = hiltViewModel(),
+fun CurrentConditionsScreen(
+    latitudeLongitude: LatitudeLongitude?,
+    viewModel: CurrentConditionsViewModel = hiltViewModel(),
+    onWeatherForMyLocationButton: () -> Unit,
                             onForecastButtonClick: () -> Unit,
 )
 {
     val state by viewModel.currentConditions.collectAsState(null )
-    LaunchedEffect(Unit){
-        viewModel.fetchData()
+        if(latitudeLongitude != null){
+        LaunchedEffect(Unit){
+            viewModel.fetchCurrentLocationData(latitudeLongitude)
+            }
+        }else{
+            LaunchedEffect(Unit){
+                viewModel.fetchData()
+            }
     }
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = stringResource(id = R.string.app_name)) }
@@ -47,9 +57,7 @@ fun CurrentConditionsScreen(viewModel: CurrentConditionsViewModel = hiltViewMode
     }
     ){
         state?.let {
-            CurrentConditionsContent(it){
-                onForecastButtonClick()
-            }
+            CurrentConditionsContent(it, onWeatherForMyLocationButton,onForecastButtonClick)
         }
     }
 }
@@ -57,6 +65,7 @@ fun CurrentConditionsScreen(viewModel: CurrentConditionsViewModel = hiltViewMode
 @Composable
 private fun CurrentConditionsContent(
                                      currentConditions: CurrentConditions,
+                                     onWeatherForMyLocationButton: () -> Unit,
                                      onForecastButtonClick: () -> Unit,){
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -64,7 +73,7 @@ private fun CurrentConditionsContent(
     ) {
         Text(
             modifier = Modifier.padding(16.dp),
-            text = stringResource(id = R.string.city_name, R.string.city_name),
+            text = currentConditions.cityName,
             style = androidx.compose.ui.text.TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight(400)
@@ -109,7 +118,10 @@ private fun CurrentConditionsContent(
         Button(onClick = onForecastButtonClick) {
             Text(text = stringResource(id = R.string.forecast))
         }
+        Spacer(modifier = Modifier.height(72.dp))
+        Button(onClick = {onWeatherForMyLocationButton()}){
+            Text(text = stringResource(id = R.string.get_weather_for_my_location))
+        }
     }
-
 }
 
